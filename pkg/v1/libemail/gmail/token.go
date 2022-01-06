@@ -1,6 +1,7 @@
 package gmail
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -11,7 +12,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"strings"
 )
 
 func LoadToken(path string) (*oauth2.Token, error) {
@@ -24,11 +24,15 @@ func LoadToken(path string) (*oauth2.Token, error) {
 }
 
 func LoadTokenFromEnv(key string) (*oauth2.Token, error) {
-	token, ok := os.LookupEnv(key)
+	rawToken, ok := os.LookupEnv(key)
 	if !ok {
 		return nil, fmt.Errorf("could not find %s", key)
 	}
-	return TokenFromReader(strings.NewReader(token))
+	token, err := base64.StdEncoding.DecodeString(rawToken)
+	if err != nil {
+		return nil, err
+	}
+	return TokenFromReader(bytes.NewReader(token))
 }
 
 func TokenFromReader(r io.Reader) (*oauth2.Token, error) {
