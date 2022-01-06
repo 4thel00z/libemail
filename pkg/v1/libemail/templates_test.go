@@ -1,4 +1,4 @@
-package gmail
+package libemail
 
 import (
 	"github.com/stretchr/testify/assert"

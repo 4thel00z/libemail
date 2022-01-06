@@ -1,4 +1,4 @@
-package gmail
+package libemail
 
 import (
 	"bytes"
